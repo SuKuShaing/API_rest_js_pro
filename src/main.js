@@ -3,13 +3,21 @@ He aquí la documentación de la Api
 https://developers.themoviedb.org/3/getting-started
 */
 
+const api_axios = axios.create({
+    baseURL: 'https://api.themoviedb.org/3/',
+    Headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+    },
+    params: {
+        'api_key' : API_KEY
+    }
+})
 
 async function getTrendingMoviesPreview() {
-    const res = await fetch('https://api.themoviedb.org/3/trending/movie/week?api_key=' + API_KEY);
-    const data = await res.json();
+    const {data} = await api_axios('trending/movie/week');
 
     const movies = data.results;
-    console.log({data, movies});
+    // console.log({data, movies});
     movies.forEach(movie => {
         const trendingPreviewMoviesContainer = document.getElementById('trendingPreview-movieList');
 
@@ -29,11 +37,11 @@ async function getTrendingMoviesPreview() {
 getTrendingMoviesPreview();
 
 async function getCategoriesPreview() {
-    const res = await fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=' + API_KEY);
-    const data = await res.json();
+    const {data} = await api_axios('genre/movie/list'); //porque data tiene que estar entre corchetes 
+    // console.log('data: ', data)
 
     const categories = data.genres;
-    console.log({data, categories});
+    // console.log({data, categories});
     categories.forEach(category => {
         const previewCategoriesContainer = document.querySelector('#categoriesPreview .categoriesPreview-list');
 
