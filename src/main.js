@@ -19,7 +19,7 @@ async function getTrendingMoviesPreview() {
     const movies = data.results;
     // console.log({data, movies});
     movies.forEach(movie => {
-        const trendingPreviewMoviesContainer = document.getElementById('trendingPreview-movieList');
+        const trendingMoviesPreviewList = document.getElementById('trendingPreview-movieList');
 
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container'); //classList para crear la clase del elemento html
@@ -30,20 +30,18 @@ async function getTrendingMoviesPreview() {
         movieImg.setAttribute('src', `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
 
         movieContainer.appendChild(movieImg); //appendChild para añadirle los html creados
-        trendingPreviewMoviesContainer.appendChild(movieContainer);
+        trendingMoviesPreviewList.appendChild(movieContainer);
     });
 }
-
-getTrendingMoviesPreview();
 
 async function getCategoriesPreview() {
     const {data} = await api_axios('genre/movie/list'); //porque data tiene que estar entre corchetes 
     // console.log('data: ', data)
-
+    
     const categories = data.genres;
     // console.log({data, categories});
     categories.forEach(category => {
-        const previewCategoriesContainer = document.querySelector('#categoriesPreview .categoriesPreview-list');
+        const categoriesPreviewList = document.querySelector('#categoriesPreview .categoriesPreview-list');
 
         const categoryContainer = document.createElement('div');
         categoryContainer.classList.add('category-container'); //classList para crear la clase del elemento html
@@ -55,11 +53,10 @@ async function getCategoriesPreview() {
 
         categoryTitle.appendChild(categoryTitleText);
         categoryContainer.appendChild(categoryTitle);
-        previewCategoriesContainer.appendChild(categoryContainer);
+        categoriesPreviewList.appendChild(categoryContainer);
     });
 }
 
-getCategoriesPreview()
 
 /* 
 Otra manera de acceder a los atributos es llamarlos como si fueran campos (visualmente se me hace mas fácil esta manera):
