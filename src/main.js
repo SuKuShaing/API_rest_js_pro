@@ -13,13 +13,12 @@ const api_axios = axios.create({
     }
 })
 
-async function getTrendingMoviesPreview() {
-    const {data} = await api_axios('trending/movie/week');
+//Utils
 
-    const movies = data.results;
-    // console.log({data, movies});
+function createMovies(movies, container) {
+    container.innerHTML = "";
+
     movies.forEach(movie => {
-        const trendingMoviesPreviewList = document.getElementById('trendingPreview-movieList');
 
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container'); //classList para crear la clase del elemento html
@@ -27,11 +26,47 @@ async function getTrendingMoviesPreview() {
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title); //setAttribute para agregar atributos a la etiqueta html
-        movieImg.setAttribute('src', `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
+        movieImg.setAttribute(
+            'src', 
+            `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            );
 
         movieContainer.appendChild(movieImg); //appendChild para añadirle los html creados
-        trendingMoviesPreviewList.appendChild(movieContainer);
+        container.appendChild(movieContainer);
+    })
+}
+
+function createCategories(categories, container) {
+    container.innerHTML= "";
+
+    categories.forEach(category => {
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container'); //classList para crear la clase del elemento html
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.classList.add('category-title');
+        categoryTitle.setAttribute('id', 'id' + category.id); //setAttribute para agregar atributos a la etiqueta html
+        categoryTitle.addEventListener('click', () => {
+            location.hash = `#category=${category.id}-${category.name}`;
+        });
+        const categoryTitleText = document.createTextNode(category.name);
+
+        categoryTitle.appendChild(categoryTitleText);
+        categoryContainer.appendChild(categoryTitle);
+        container.appendChild(categoryContainer);
     });
+}
+
+//lamados a la API
+
+async function getTrendingMoviesPreview() {
+    const {data} = await api_axios('trending/movie/week');
+
+    const movies = data.results;
+    // console.log({data, movies});
+    trendingMoviesPreviewList.innerHTML = "";
+
+    createMovies(movies, trendingMoviesPreviewList);
 }
 
 async function getCategoriesPreview() {
@@ -40,21 +75,26 @@ async function getCategoriesPreview() {
     
     const categories = data.genres;
     // console.log({data, categories});
-    categories.forEach(category => {
-        const categoriesPreviewList = document.querySelector('#categoriesPreview .categoriesPreview-list');
 
-        const categoryContainer = document.createElement('div');
-        categoryContainer.classList.add('category-container'); //classList para crear la clase del elemento html
+    createCategories(categories, categoriesPreviewList);
+}
 
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.classList.add('category-title');
-        categoryTitle.setAttribute('id', 'id' + category.id); //setAttribute para agregar atributos a la etiqueta html
-        const categoryTitleText = document.createTextNode(category.name);
-
-        categoryTitle.appendChild(categoryTitleText);
-        categoryContainer.appendChild(categoryTitle);
-        categoriesPreviewList.appendChild(categoryContainer);
+async function getMoviesByCategory(id) {
+    const {data} = await api_axios(`discover/movie`, {
+        params: {
+            with_genres: id
+        }
     });
+
+    const movies = data.results;
+
+    createMovies(movies, genericSection);
+
+    // window.scroll(0,0);
+    /*el profe uso esto
+    document.body.scrollTop = 0; webkit
+    document.documentElement.scrollTop = 0; mozilla
+    */
 }
 
 

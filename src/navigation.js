@@ -8,7 +8,6 @@ arrowBtn.addEventListener('click', () => {
     location.hash = '#home';
 });
 
-
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
 
@@ -27,6 +26,8 @@ function navigator() {
         homePage();
     }
 
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
 }
 
 function homePage() {
@@ -47,6 +48,8 @@ function homePage() {
 
     getTrendingMoviesPreview();
     getCategoriesPreview();
+
+    document.title=`PlatziMovies`;
 }
 
 function categoryPage() {
@@ -64,6 +67,23 @@ function categoryPage() {
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
+
+    //Mi manera
+    const url = location.hash.split('='); //["#category", "id-name"]
+    const urlpage = url[1].split('-');
+    // console.log(urlpage[0]);//"id"
+
+    //La del profe, usando ecmascrip 22, muy similar, donde se le dá nombre al elemento del array
+    const [_, categoryData] = location.hash.split('=');
+    const [categoryID, categoryName] = categoryData.split('-');
+    // console.log(categoryID)
+    // const nameSinEspacios = categoryName.replace('%20', ' ');
+    const nameSinEspacios = decodeURI(categoryName); //usualmente un % seguido de dos números quieren decir que un string fue codificado para formar parte de un URI, por cuestiones de evitar caracteres raros. Se recomienda usar: decodeURL
+
+    headerCategoryTitle.innerHTML = nameSinEspacios;
+    document.title=`PlatziMovies ${nameSinEspacios}`;
+
+    getMoviesByCategory(categoryID);
 }
 
 function movieDetailsPage() {
