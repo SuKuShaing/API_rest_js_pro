@@ -22,13 +22,16 @@ function createMovies(movies, container) {
 
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container'); //classList para crear la clase del elemento html
+        movieContainer.addEventListener('click', () => {
+            location.hash='#movie=' + movie.id;
+        } );
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title); //setAttribute para agregar atributos a la etiqueta html
         movieImg.setAttribute(
             'src', 
-            `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            `https://image.tmdb.org/t/p/w300${movie.poster_path}`
             );
 
         movieContainer.appendChild(movieImg); //appendChild para añadirle los html creados
@@ -58,15 +61,35 @@ function createCategories(categories, container) {
 }
 
 //lamados a la API
-
 async function getTrendingMoviesPreview() {
     const {data} = await api_axios('trending/movie/week');
 
     const movies = data.results;
-    // console.log({data, movies});
+    // console.log(movies);
     trendingMoviesPreviewList.innerHTML = "";
 
     createMovies(movies, trendingMoviesPreviewList);
+}
+
+//lamados a la API
+async function getMovieById(id) {
+    const { data: movie } = await api_axios('movie/' + id);
+
+    const movieImgUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    headerSection.style.background = `
+    linear-gradient(
+        180deg, 
+        rgba(0, 0, 0, 0.35) 12.27%, 
+        rgba(0, 0, 0, 0) 35.17%
+        ),
+    url(${movieImgUrl})
+    `;
+
+    movieDetailTitle.textContent = movie.title;
+    movieDetailDescription.textContent = movie.overview;
+    movieDetailScore.textContent = movie.vote_average.toFixed(1);
+
+    createCategories(movie.genres, movieDetailCategoriesList);
 }
 
 async function getCategoriesPreview() {
