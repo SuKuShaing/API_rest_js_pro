@@ -90,6 +90,8 @@ async function getMovieById(id) {
     movieDetailScore.textContent = movie.vote_average.toFixed(1);
 
     createCategories(movie.genres, movieDetailCategoriesList);
+
+    getRelatedMoviesId(id);
 }
 
 async function getCategoriesPreview() {
@@ -140,6 +142,15 @@ async function getTrendingMovies() {
 
     createMovies(movies, genericSection);
 }
+
+async function getRelatedMoviesId(id) {
+    const { data } = await api_axios('movie/' + id + '/recommendations');
+    const relatedMovies = data.results;
+
+    createMovies(relatedMovies, relatedMoviesContainer);
+}
+
+
 /* 
 Otra manera de acceder a los atributos es llamarlos como si fueran campos (visualmente se me hace mas fácil esta manera):
 movieImg.alt=“Nombre de la película”;
