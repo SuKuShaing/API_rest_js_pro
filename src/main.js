@@ -15,7 +15,19 @@ const api_axios = axios.create({
 
 //Utils
 
-function createMovies(movies, container) {
+const lazyloader = new IntersectionObserver((entries) => { //se puede agregar un (callback, options), options se usa para el área o las cosas a cargar y/o definir, en este caso como vigilamos solo lo que ve el usuario, no es necesario colocarlo | el callback recibe una fb, y se la envía una arrow fc
+    entries.forEach((entry) => { //El parámetro que se le pasa a esta arrow es lo que entra en el área
+        // console.log({entry});
+        if (entry.isIntersecting) {
+            const url = entry.target.getAttribute('data-img');
+            entry.target.setAttribute('src', url);
+            lazyLoader.unobserve(entry.target);
+        }
+    });
+});
+
+function createMovies(movies, container, lazyload = false) { //por defecto el lazyloader esta desactivado
+    console.log(`lazyload es ${lazyload}`);
     container.innerHTML = "";
 
     movies.forEach(movie => {
@@ -30,9 +42,13 @@ function createMovies(movies, container) {
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title); //setAttribute para agregar atributos a la etiqueta html
         movieImg.setAttribute(
-            'src', 
+            lazyload ? 'data-img' : 'src',  //si el lazyloader está activo se guarda en un lugar, sino en el otro
             `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-            );
+        );
+
+        if (lazyload) { //en caso de que el lazyloader esté activo, se ejecuta
+            lazyloader.observe(movieImg);
+        };
 
         movieContainer.appendChild(movieImg); //appendChild para añadirle los html creados
         container.appendChild(movieContainer);
@@ -68,7 +84,7 @@ async function getTrendingMoviesPreview() {
     // console.log(movies);
     trendingMoviesPreviewList.innerHTML = "";
 
-    createMovies(movies, trendingMoviesPreviewList);
+    createMovies(movies, trendingMoviesPreviewList, true);
 }
 
 //lamados a la API
