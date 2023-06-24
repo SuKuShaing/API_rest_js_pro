@@ -21,7 +21,7 @@ const lazyloader = new IntersectionObserver((entries) => { //se puede agregar un
         if (entry.isIntersecting) {
             const url = entry.target.getAttribute('data-img');
             entry.target.setAttribute('src', url);
-            lazyLoader.unobserve(entry.target);
+            // lazyLoader.unobserve(entry.target);
         }
     });
 });
@@ -44,7 +44,10 @@ function createMovies(movies, container, lazyload = false) { //por defecto el la
         movieImg.setAttribute(
             lazyload ? 'data-img' : 'src',  //si el lazyloader está activo se guarda en un lugar, sino en el otro
             `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-        );
+            );
+        movieImg.addEventListener('error', ()=>{ //si es que se genera un error al cargar el poster de la película, lanza una imagen por defecto
+            movieImg.setAttribute('src', 'https://lh3.googleusercontent.com/drive-viewer/AFGJ81pFXRJ8k4axZhGMzY_Sxpe-xRiwLQ24Z59VZRV_pqKh42b84_x480Rs2EjT8j8NyqeUl2Iv4m0KQCfnjXb7e_S8rw4V=w1366-h695');
+        });
 
         if (lazyload) { //en caso de que el lazyloader esté activo, se ejecuta
             lazyloader.observe(movieImg);
@@ -129,7 +132,7 @@ async function getMoviesByCategory(id) {
 
     const movies = data.results;
 
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 
     // window.scroll(0,0);
     /*el profe uso esto
@@ -147,7 +150,7 @@ async function getMoviesBySearch(query) {
 
     const movies = data.results;
 
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 }
 
 async function getTrendingMovies() {
@@ -156,14 +159,14 @@ async function getTrendingMovies() {
     // console.log({data, movies});
     trendingMoviesPreviewList.innerHTML = "";
 
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 }
 
 async function getRelatedMoviesId(id) {
     const { data } = await api_axios('movie/' + id + '/recommendations');
     const relatedMovies = data.results;
 
-    createMovies(relatedMovies, relatedMoviesContainer);
+    createMovies(relatedMovies, relatedMoviesContainer, true);
 }
 
 
