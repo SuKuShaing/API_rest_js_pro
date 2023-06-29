@@ -170,31 +170,38 @@ async function getTrendingMovies() {
 
     createMovies(movies, genericSection, {lazyload: true, clean: false});
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Cargar más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies)
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Cargar más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies)
 
-    genericSection.appendChild(btnLoadMore);
+    // genericSection.appendChild(btnLoadMore);
 }
 
-let page = 1;
-
 async function getPaginatedTrendingMovies() {
-    page++;
-    const {data} = await api_axios('trending/movie/week', {
-        params: {
-            page,
-        },
-    });
-    const movies = data.results;
+    // document.documentElement.scrollTop : Cuanto de avance ha hecho el usuario en la web, contando los pixeles desde el top
+    // document.documentElement.clientHeight : Cuanto mide la pantalla del usuario en px
+    // document.documentElement.scrollHeight : Cuanto es el largo de la pagina en px
 
-    createMovies(movies, genericSection, {lazyload: true, clean: false});
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Cargar más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies)
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - (0.1 * clientHeight))
 
-    genericSection.appendChild(btnLoadMore);
+    if (scrollIsBottom) {
+        page++;
+        const {data} = await api_axios('trending/movie/week', {
+            params: {
+                page,
+            },
+        });    
+        const movies = data.results;
+        createMovies(movies, genericSection, {lazyload: true, clean: false});
+    }
+
+    //Ya no necesitamos el botón puesto que al llegar al final la web agrega más películas
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Cargar más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies)
+    // genericSection.appendChild(btnLoadMore);
 }
 
 async function getRelatedMoviesId(id) {
