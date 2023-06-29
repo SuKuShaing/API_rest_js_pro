@@ -166,6 +166,8 @@ async function getTrendingMovies() {
     const {data} = await api_axios('trending/movie/week');
     const movies = data.results;
     // console.log({data, movies});
+    console.log(`total_pages: ${data.total_pages}`);
+    maxPage = data.total_pages;
     trendingMoviesPreviewList.innerHTML = "";
 
     createMovies(movies, genericSection, {lazyload: true, clean: false});
@@ -184,16 +186,20 @@ async function getPaginatedTrendingMovies() {
 
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - (0.1 * clientHeight))
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - (0.1 * clientHeight)) //verifica que el usuario llegue al final del sitio para recargar más películas
 
-    if (scrollIsBottom) {
+    const pageIsNotMax = page < maxPage; //valida que no sea la última pagina que puede ser llamada a la API
+
+    if (scrollIsBottom && pageIsNotMax) {
         page++;
         const {data} = await api_axios('trending/movie/week', {
             params: {
                 page,
+
             },
         });    
         const movies = data.results;
+
         createMovies(movies, genericSection, {lazyload: true, clean: false});
     }
 

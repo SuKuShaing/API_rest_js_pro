@@ -1,5 +1,6 @@
 let page = 1; //Esto será llamado en getPaginatedTrendingMovies
 let infiniteScroll; // va a tener un valor distinto según cada ruta en la que esté
+let maxPage;
 
 searchFormBtn.addEventListener('click', () => {
         location.hash = '#search=' + searchFormInput.value.trim();
