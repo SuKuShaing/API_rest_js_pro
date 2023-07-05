@@ -14,7 +14,6 @@ const api_axios = axios.create({
 })
 
 //Utils
-
 const lazyloader = new IntersectionObserver((entries) => { //se puede agregar un (callback, options), options se usa para el área o las cosas a cargar y/o definir, en este caso como vigilamos solo lo que ve el usuario, no es necesario colocarlo | el callback recibe una fb, y se la envía una arrow fc
     entries.forEach((entry) => { //El parámetro que se le pasa a esta arrow es lo que entra en el área
         // console.log({entry});
@@ -138,8 +137,8 @@ async function getMoviesByCategory(id) {
             with_genres: id
         }
     });
-
     const movies = data.results;
+    maxPage = data.total_pages;
 
     createMovies(movies, genericSection, {lazyload: true});
 
@@ -150,6 +149,29 @@ async function getMoviesByCategory(id) {
     */
 }
 
+function getPaginatedMoviesByCategory(id) {
+    return async function () {
+        // document.documentElement.scrollTop : Cuanto de avance ha hecho el usuario en la web, contando los pixeles desde el top // document.documentElement.clientHeight : Cuanto mide la pantalla del usuario en px // document.documentElement.scrollHeight : Cuanto es el largo de la pagina en px
+
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - (0.1 * clientHeight)) //verifica que el usuario llegue al final del sitio para recargar más películas
+        const pageIsNotMax = page < maxPage; //valida que no sea la última pagina que puede ser llamada a la API
+
+        if (scrollIsBottom && pageIsNotMax) {
+            page++;
+            const {data} = await api_axios(`discover/movie`, {
+                params: {
+                    with_genres: id,
+                    page,
+                }
+            });
+            const movies = data.results;
+
+            createMovies(movies, genericSection, {lazyload: true, clean: false});
+        }
+    } 
+}
+
 async function getMoviesBySearch(query) {
     const {data} = await api_axios(`search/movie`, {
         params: {
@@ -158,8 +180,33 @@ async function getMoviesBySearch(query) {
     });
 
     const movies = data.results;
+    maxPage = data.total_pages;
+    console.log(`maxPage: ${maxPage}`);
 
     createMovies(movies, genericSection, {lazyload: true});
+}
+
+function getPaginatedMoviesBySearch(query) {
+    return async function () {
+        // document.documentElement.scrollTop : Cuanto de avance ha hecho el usuario en la web, contando los pixeles desde el top // document.documentElement.clientHeight : Cuanto mide la pantalla del usuario en px // document.documentElement.scrollHeight : Cuanto es el largo de la pagina en px
+
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - (0.1 * clientHeight)) //verifica que el usuario llegue al final del sitio para recargar más películas
+    const pageIsNotMax = page < maxPage; //valida que no sea la última pagina que puede ser llamada a la API
+
+    if (scrollIsBottom && pageIsNotMax) {
+        page++;
+        const {data} = await api_axios(`search/movie`, {
+            params: {
+                query,
+                page,
+            }
+        });
+        const movies = data.results;
+
+        createMovies(movies, genericSection, {lazyload: true, clean: false});
+    }
+    } 
 }
 
 async function getTrendingMovies() {

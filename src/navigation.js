@@ -104,6 +104,8 @@ function categoryPage() {
     document.title=`PlatziMovies ${nameSinEspacios}`;
 
     getMoviesByCategory(categoryID);
+
+    infiniteScroll = getPaginatedMoviesByCategory(categoryID);
 }
 
 function movieDetailsPage() {
@@ -148,7 +150,7 @@ function searchPage() {
     const queryConEspacios = decodeURI(query)
     getMoviesBySearch(queryConEspacios);
 
-
+    infiniteScroll = getPaginatedMoviesBySearch(query);
 
 
     // const [categoryID, categoryName] = categoryData.split('-');
