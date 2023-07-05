@@ -42,9 +42,6 @@ function createMovies(
 
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container'); //classList para crear la clase del elemento html
-        movieContainer.addEventListener('click', () => {
-            location.hash='#movie=' + movie.id;
-        } );
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
@@ -53,8 +50,18 @@ function createMovies(
             lazyload ? 'data-img' : 'src',  //si el lazyloader está activo se guarda en un lugar, sino en el otro
             `https://image.tmdb.org/t/p/w300${movie.poster_path}`
             );
+        movieImg.addEventListener('click', () => {
+            location.hash='#movie=' + movie.id;
+        } );
         movieImg.addEventListener('error', ()=>{ //si es que se genera un error al cargar el poster de la película, lanza una imagen por defecto
             movieImg.setAttribute('src', 'https://lh3.googleusercontent.com/drive-viewer/AFGJ81pFXRJ8k4axZhGMzY_Sxpe-xRiwLQ24Z59VZRV_pqKh42b84_x480Rs2EjT8j8NyqeUl2Iv4m0KQCfnjXb7e_S8rw4V=w1366-h695');
+        });
+
+        const movieBtn = document.createElement('button');
+        movieBtn.classList.add('movie-btn');
+        movieBtn.addEventListener('click', () => {
+            movieBtn.classList.toggle('movie-btn--liked');
+            //Deberíamos agregar la pelicula a Local storage
         });
 
         if (lazyload) { //en caso de que el lazyloader esté activo, se ejecuta
@@ -62,6 +69,7 @@ function createMovies(
         };
 
         movieContainer.appendChild(movieImg); //appendChild para añadirle los html creados
+        movieContainer.appendChild(movieBtn);
         container.appendChild(movieContainer);
     })
 }
