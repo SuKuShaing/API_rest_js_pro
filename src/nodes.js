@@ -4,6 +4,7 @@ const trendingPreviewSection = document.querySelector('#trendingPreview');
 const categoriesPreviewSection = document.querySelector('#categoriesPreview');
 const genericSection = document.querySelector('#genericList');
 const movieDetailSection = document.querySelector('#movieDetail');
+const likedMovieSecion = document.querySelector('#liked'); //se crea el nodo para toda la sección de películas likeadas
 
 // Lists & Containers
 const searchForm = document.querySelector('#searchForm');
@@ -11,6 +12,7 @@ const trendingMoviesPreviewList = document.querySelector('.trendingPreview-movie
 const categoriesPreviewList = document.querySelector('.categoriesPreview-list');
 const movieDetailCategoriesList = document.querySelector('#movieDetail .categories-list');
 const relatedMoviesContainer = document.querySelector('.relatedMovies-scrollContainer');
+const likedMoviesListArticle = document.querySelector('.liked-movieList'); //Se crea el nodo para el contenedor de la lista películas 
 
 // Elements
 const headerTitle = document.querySelector('.header-title');

@@ -62,12 +62,14 @@ function homePage() {
     searchForm.classList.remove('inactive');
 
     trendingPreviewSection.classList.remove('inactive');
+    likedMovieSecion.classList.remove('inactive'); //para se la lista de películas se vean en el Home
     categoriesPreviewSection.classList.remove('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.add('inactive');
 
     getTrendingMoviesPreview();
     getCategoriesPreview();
+    getLikedMovies(); //Se llama a la fc que pondrá en pantalla la lista
 
     document.title=`PlatziMovies`;
 }
@@ -84,6 +86,7 @@ function categoryPage() {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMovieSecion.classList.add('inactive'); //se remueve para que no se vea la lista en la pantalla
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
@@ -120,6 +123,7 @@ function movieDetailsPage() {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMovieSecion.classList.add('inactive'); //se remueve para que no se vea la lista en la pantalla
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.remove('inactive');
@@ -141,6 +145,7 @@ function searchPage() {
     searchForm.classList.remove('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMovieSecion.classList.add('inactive'); //se remueve para que no se vea la lista en la pantalla
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
@@ -170,6 +175,7 @@ function trendsPage() {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMovieSecion.classList.add('inactive'); //se remueve para que no se vea la lista en la pantalla
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');

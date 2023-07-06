@@ -3,6 +3,8 @@ He aquí la documentación de la Api
 https://developers.themoviedb.org/3/getting-started
 */
 
+
+//Data
 const api_axios = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     Headers: {
@@ -12,6 +14,38 @@ const api_axios = axios.create({
         'api_key' : API_KEY
     }
 })
+
+
+function likedMovieList() {
+    //con esta fc se obtiene la lista de peliculas guardadas en LS (localStorage)
+    const item = JSON.parse(localStorage.getItem('liked_movies')); //convierte el texto que da LS en objeto js
+    let movies;
+
+    //Se valida que no esté vacio, sí está vació presenta un error en el lugar en el que fue llamado
+    if (item) {//valida que tenga contenido
+        movies = item;
+    } else {
+        movies = {}
+    }
+
+    return movies;
+}
+
+function likeMovie(movie) {
+    //con esta fc agregamos películas a la lista de películas likeadas
+    const likedMovies = likedMovieList();//llamamos al objeto que contiene la lista de películas likeadas
+
+    if (likedMovies[movie.id]) {//valida que exista el id de la pelicula, puesto que se guarda el par { id_pelicula: contenido_pelicula }
+        likedMovies[movie.id] = undefined;
+        //remueve de localStorage la película si se encontraba dentro de la lista
+    } else {
+        likedMovies[movie.id] = movie;
+        //agregar la película a la lista de películas likeadas
+    }
+
+    localStorage.setItem('liked_movies', JSON.stringify(likedMovies)); //Convierte el objeto Js en un texto que se guarda en LS
+}
+
 
 //Utils
 const lazyloader = new IntersectionObserver((entries) => { //se puede agregar un (callback, options), options se usa para el área o las cosas a cargar y/o definir, en este caso como vigilamos solo lo que ve el usuario, no es necesario colocarlo | el callback recibe una fb, y se la envía una arrow fc
@@ -59,9 +93,12 @@ function createMovies(
 
         const movieBtn = document.createElement('button');
         movieBtn.classList.add('movie-btn');
+        likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
         movieBtn.addEventListener('click', () => {
             movieBtn.classList.toggle('movie-btn--liked');
-            //Deberíamos agregar la pelicula a Local storage
+            likeMovie(movie); //agrega una película a la lista
+            getLikedMovies(); //para que se recargue y aparezca el corazón marcado en ambas categorías, trending y liked
+            getTrendingMoviesPreview(); //para que se recargue y aparezca el corazón marcado en ambas categorias, trending y liked
         });
 
         if (lazyload) { //en caso de que el lazyloader esté activo, se ejecuta
@@ -272,6 +309,13 @@ async function getRelatedMoviesId(id) {
     createMovies(relatedMovies, relatedMoviesContainer, {lazyload: true});
 }
 
+function getLikedMovies() {
+    //Esta fc obtiene la lista de películas likeadas y las coloca en la pantalla
+    const likedMovies = likedMovieList(); //llama a la lista de películas y obtiene un objeto que contiene la lista
+    const moviesArray = Object.values(likedMovies) // la fc para crear cada película recibe un array no un objeto, así que transformamos ese objeto en un array
+
+    createMovies(moviesArray, likedMoviesListArticle, { lazyload: true, clean: true }); //creamos cada película
+}
 
 /* 
 Otra manera de acceder a los atributos es llamarlos como si fueran campos (visualmente se me hace mas fácil esta manera):
