@@ -11,7 +11,9 @@ const api_axios = axios.create({
         'Content-Type': 'application/json;charset=utf-8'
     },
     params: {
-        'api_key' : API_KEY
+        'api_key' : API_KEY,
+        "language": navigator.language || "es-ES"
+        // Para cambiar el idioma a la app ⬆, la api debe soportarlo, hay una iso para este tema -> https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 
     }
 })
 
